@@ -67,14 +67,28 @@ def baixar_video(url):
     caminho_final = gerar_nome_unico(usuario)
 
     opcoes_yt_dlp = {
-        # O outtmpl agora usa o caminho exato que calculamos
         'outtmpl': caminho_final,
         'format': 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best',
         'quiet': False,
-        'no_warnings': False,
+        'no_warnings': False, 
         'http_headers': {
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
         },
+        
+        # --- A BLINDAGEM PARA O TWITTER (X) ---
+        'postprocessors': [{
+            # Garante que o arquivo passe pelo FFmpeg no final
+            'key': 'FFmpegVideoConvertor',
+            'preferedformat': 'mp4',
+        }],
+        'postprocessor_args': {
+            # Injeta as regras exatas que o algoritmo do Twitter exige
+            'default': [
+                '-c:v', 'libx264',     # Força o vídeo para H.264
+                '-pix_fmt', 'yuv420p', # Formato de pixel universal (O Twitter barra se não tiver isso)
+                '-c:a', 'aac'          # Força o áudio para AAC
+            ]
+        }
     }
 
     try:
@@ -121,13 +135,25 @@ def baixar_video_instagram(url):
         'format': 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best',
         'quiet': False,
         'no_warnings': False,
-        
-        # A CHAVE MESTRA: Isso diz ao yt-dlp para fingir que é a sua conta logada
         'cookiefile': 'cookies/instagram_cookie.txt', 
-        
         'http_headers': {
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
         },
+        
+        # --- A BLINDAGEM PARA O TWITTER (X) ---
+        'postprocessors': [{
+            # Garante que o arquivo passe pelo FFmpeg no final
+            'key': 'FFmpegVideoConvertor',
+            'preferedformat': 'mp4',
+        }],
+        'postprocessor_args': {
+            # Injeta as regras exatas que o algoritmo do Twitter exige
+            'default': [
+                '-c:v', 'libx264',     # Força o vídeo para H.264
+                '-pix_fmt', 'yuv420p', # Formato de pixel universal (O Twitter barra se não tiver isso)
+                '-c:a', 'aac'          # Força o áudio para AAC
+            ]
+        }
     }
 
     try:
