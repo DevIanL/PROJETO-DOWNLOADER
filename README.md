@@ -15,4 +15,4 @@ Abra o terminal e execute:
 ```bash
 winget install ffmpeg
 
-python main.py
+
